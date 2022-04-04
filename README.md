@@ -1,0 +1,1 @@
+# serverless-go-aws-lambda
