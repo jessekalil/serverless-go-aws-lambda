@@ -1,0 +1,38 @@
+service: serverless-go-aws-lambda
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: go1.x
+  region: sa-east-1
+  memorySize: 256
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "s3:GetObject"
+            - "s3:PutObject"
+          Resource:
+            - "arn:aws:s3:::*"
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+
+functions:
+  optimize:
+    handler: bin/optimize
+    events:
+      - s3:
+          bucket: jk-lambda-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploads/
+            - suffix: .jpg
+      - s3:
+          bucket: jk-lambda-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploads/
+            - suffix: .png
